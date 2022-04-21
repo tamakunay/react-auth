@@ -1,9 +1,8 @@
 import Register from './components/Register'
-import './App.css';
 
 function App() {
   return (
-    <main className="App">
+    <main>
       <Register />
     </main>
   );
