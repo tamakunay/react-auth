@@ -6,9 +6,12 @@ import {
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "../api/api";
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+
+const REGISTER_URL = "/register";
 
 const Register = () => {
   const userRef = useRef();
@@ -63,10 +66,25 @@ const Register = () => {
       return;
     }
 
-    //TODO:submit to axios here
+    try {
+      const response = await axios.post(
+        REGISTER_URL,
+        JSON.stringify({ user, pwd }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
 
-    console.log(user, pwd);
-    setSuccess(true);
+      console.log(JSON.stringify(response));
+      if (response.status === 200) {
+        setSuccess(true);
+        // clear input, redirect to somewhere
+      }
+    } catch (err) {
+      console.error(err);
+      errRef.current.focus();
+    }
   };
 
   return (
@@ -107,6 +125,7 @@ const Register = () => {
               onFocus={() => setUserFocus(true)}
               onBlur={() => setUserFocus(false)}
               className="rounded form-input"
+              value={user}
             />
             <div
               id="uidnote"
@@ -206,7 +225,7 @@ const Register = () => {
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                 <FontAwesomeIcon icon={faLock} />
               </span>
-              Sign in
+              Register
             </button>
           </div>
         </form>
@@ -215,7 +234,7 @@ const Register = () => {
           Already have an account?{" "}
           <a
             href="#"
-            className="font-medium text-indigo-600 hover:text-indigo-500"
+            className="font-medium text-green-600 hover:text-green-500"
           >
             Sign In
           </a>
